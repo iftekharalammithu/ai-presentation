@@ -20,14 +20,14 @@ model User {
   email String @unique
   profileImage String?
   subscription Boolean? @default(false)
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
-temonSqueezyApiKey String?
-storeId String?
-webhookSecret String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  temonSqueezyApiKey String?
+  storeId String?
+  webhookSecret String?
 
-Projects Project[] @relation("OwnedProjects")
-PurchasedProjects Project[] @relation("PurchasedProjects")
+  Projects Project[] @relation("OwnedProjects")
+  PurchasedProjects Project[] @relation("PurchasedProjects")
 }
 
 model Project {
@@ -37,7 +37,7 @@ model Project {
   updatedAt DateTime @updatedAt
   sledes Json?
   userId String
-  outlines string[]
+  outlines String[]
   isDeleted Boolean? @default(false)
   isSellable Boolean? @default(false)
   varientId String?
