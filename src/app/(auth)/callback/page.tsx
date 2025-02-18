@@ -6,7 +6,7 @@ const AuthCallback = async () => {
 
   if (auth.status === 200) {
     console.log("User authenticated successfully");
-    redirect("/dashboard");
+    redirect("/Dashboard");
   } else if (
     auth.status === 401 ||
     auth.status === 500 ||
