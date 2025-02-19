@@ -54,23 +54,3 @@ const AppSidebar = ({ recentProjects, user, ...props }: Props) => {
 
 export default AppSidebar;
 
-// import { Project, User } from '@prisma/client'
-// import React from 'react'
-// import { Sidebar } from '../ui/sidebar';
-
-// const AppSidebar = ({
-//   recentProjects,
-//   user,
-//   ...props
-// } : {
-//   recentProjects: Project[]} &
-//   {user: User} &
-//   React.ComponentProps<typeof Sidebar>
-// ) => {
-//   return (
-//     <div>
-//     </div>
-//   )
-// }
-
-// export default AppSidebar
