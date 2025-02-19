@@ -11,13 +11,15 @@ import {
 } from "../ui/sidebar";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useSlideStore } from "@/store/useSlideStore";
+import { useRouter } from "next/navigation";
 
 type Props = {
   recentProjects: Project[];
 };
 
 const RecentOpen = ({ recentProjects }: Props) => {
+  const { setSlides } = useSlideStore();
   const router = useRouter();
 
   const handleClick = (projectId: string, slides: JsonValue) => {
