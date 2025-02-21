@@ -9,7 +9,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   if (!auth.user) {
     redirect("/sign-in");
   }
-  return <div className="w-full min-h-screen">{children}</div>;
+  return <div className="w-full min-h-screen ">{children}</div>;
 };
 
 export default Layout;

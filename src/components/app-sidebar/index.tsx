@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import NavMain from "./nav-main";
 import { data } from "@/lib/constants";
 import RecentOpen from "./recent-open";
+import NavFooter from "./NavFooter";
 
 type Props = {
   recentProjects: Project[];
@@ -23,11 +24,11 @@ const AppSidebar = ({ recentProjects, user, ...props }: Props) => {
   return (
     <Sidebar
       collapsible="icon"
-      className="max-w-[212px
+      className="max-w-[212px]
       bg-background-90"
       {...props}
     >
-      <SidebarHeader className=" pt-6 px-3 pb-0">
+      <SidebarHeader className=" pt-6 px-2 pb-0">
         <SidebarMenuButton
           size={"lg"}
           className="data-[state=open]:text-sidebar-accent-foreground"
@@ -43,14 +44,15 @@ const AppSidebar = ({ recentProjects, user, ...props }: Props) => {
           </span>
         </SidebarMenuButton>
       </SidebarHeader>
-      <SidebarContent className=" px-3 mt-10 gap-y-6">
+      <SidebarContent className=" px-2 mt-10 gap-y-6">
         <NavMain items={data.NavMain} />
         <RecentOpen recentProjects={recentProjects}></RecentOpen>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <NavFooter prismaUser={user}></NavFooter>
+      </SidebarFooter>
     </Sidebar>
   );
 };
 
 export default AppSidebar;
-

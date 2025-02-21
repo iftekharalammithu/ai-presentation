@@ -10,6 +10,7 @@ interface SlideState {
 export const useSlideStore = create(
   persist<SlideState>(
     (set, get) => ({
+      //State and Actions
       slides: [],
       setSlides: (slides: Slide[]) => set({ slides }),
     }),

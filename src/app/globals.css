@@ -8,6 +8,8 @@ body {
 
 @layer base {
   :root {
+    --background-80: #f0f0f0; /* Light mode color */
+    --background-90: #e0e0e0; /* Light mode color */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -44,6 +46,8 @@ body {
   }
   .dark {
     --background: 0 0% 3.9%;
+    --background-80: #292929; /* Dark mode color */
+    --background-90: #333333;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
