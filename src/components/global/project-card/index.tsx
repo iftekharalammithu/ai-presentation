@@ -4,8 +4,11 @@ import { useSlideStore } from "@/store/useSlideStore";
 import { JsonValue } from "@prisma/client/runtime/library";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import ThumnailPreview from "./thumnail-preview";
+import { timeAgo } from "@/lib/utils";
+import AlertDialogBox from "../alert-dialog";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   projectId: string;
@@ -26,6 +29,8 @@ const ProjectCard = ({
   src,
   themeName,
 }: Props) => {
+  const [loading, setloading] = useState(false);
+  const [open, setopen] = useState(false);
   const route = useRouter();
   const { setSlides } = useSlideStore();
   const handleNavagation = () => {
@@ -47,8 +52,46 @@ const ProjectCard = ({
       >
         <ThumnailPreview
           theme={theme}
-          slide={JSON.parse(JSON.stringify(slideData))?.[0]}
+          // slide={JSON.parse(JSON.stringify(slideData))?.[0]}
         ></ThumnailPreview>
+        <div className=" w-full">
+          <div className=" space-y-1">
+            <h3 className="font-semibold text-base text-primary line-clamp-1">
+              {title}
+            </h3>
+            <div className="flex w-full justify-between items-center gap-2">
+              <p
+                className="text-sm text-muted-foreground"
+                suppressHydrationWarning
+              >
+                {timeAgo(createAt)}
+              </p>
+              {isDelete ? (
+                <AlertDialogBox
+                  description="This will recoder your project and restore your data"
+                  className=" bg-green-500 text-white dark:bg-green-600 hover:bg-green-500 dark:hover:bg-green-700"
+                  loading={loading}
+                  open={open}
+                  onClick={handleRecover}
+                  handleOpen={() => {
+                    setopen(!open);
+                  }}
+                >
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className=" bg-background-80 dark:hover:bg-background"
+                    disabled={loading}
+                  >
+                    Recover
+                  </Button>
+                </AlertDialogBox>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

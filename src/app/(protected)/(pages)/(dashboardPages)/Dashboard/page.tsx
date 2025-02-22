@@ -3,6 +3,7 @@ import React from "react";
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import NotFound from "@/components/global/not-found";
 import Projects from "@/components/global/projects";
+import ProjectCard from "@/components/global/project-card";
 
 const DashboardPage = async () => {
   const allProject = await getAllProject();
@@ -20,6 +21,7 @@ const DashboardPage = async () => {
         </div>
       </div>
       {/* {Projects} */}
+      <ProjectCard></ProjectCard>
       {allProject.data && allProject.data.length > 0 ? (
         <Projects projects={allProject.data}></Projects>
       ) : (
