@@ -1,3 +1,4 @@
+"use client";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React from "react";
 
 interface AlertDialogBoxProps {
@@ -32,7 +33,7 @@ const AlertDialogBox = ({
   handleOpen,
 }: AlertDialogBoxProps) => {
   return (
-    <AlertDialog open={open} onCancel={handleOpen}>
+    <AlertDialog open={open} onOpenChange={handleOpen}>
       <AlertDialogTrigger asChild={children}>
         <AlertDialogContent>
           <AlertDialogHeader>

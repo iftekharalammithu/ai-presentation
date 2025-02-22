@@ -26,5 +26,5 @@ export const timeAgo = (timestamp: string) => {
       return `${count} ${interval.label} ago`;
     }
   }
-  return "just now";
+  return "Just Now";
 };

@@ -9,6 +9,8 @@ import ThumnailPreview from "./thumnail-preview";
 import { timeAgo } from "@/lib/utils";
 import AlertDialogBox from "../alert-dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { deleteProject, recoverProject } from "@/actions/projects";
 
 type Props = {
   projectId: string;
@@ -16,7 +18,6 @@ type Props = {
   createAt: string;
   isDelete?: boolean;
   slideData?: JsonValue;
-  src: string;
   themeName: string;
 };
 
@@ -26,7 +27,6 @@ const ProjectCard = ({
   createAt,
   isDelete,
   slideData,
-  src,
   themeName,
 }: Props) => {
   const [loading, setloading] = useState(false);
@@ -34,11 +34,67 @@ const ProjectCard = ({
   const route = useRouter();
   const { setSlides } = useSlideStore();
   const handleNavagation = () => {
-    setSlides(JSON.parse(JSON.stringify(slideData)));
+    // setSlides(JSON.parse(JSON.stringify(slideData)));
     console.log("click");
     route.push(`/presentation/${projectId}`);
   };
   const theme = themes.find((theme) => theme.name === themeName) || themes[0];
+  const handleRecover = async () => {
+    setloading(true);
+    if (!projectId) {
+      setloading(false);
+      toast("Error! ", { description: "Project not Found" });
+      return;
+    }
+    try {
+      const res = await recoverProject(projectId);
+      if (res.status !== 200) {
+        // throw new Error("Failed to recover project");
+        toast.error("Oppse!", {
+          description: res.error || "Fail to recover project",
+        });
+        return;
+      }
+      setopen(false);
+      route.refresh();
+      toast.success("Success", {
+        description: "Project recovered successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Oppse!", {
+        description: " Failed to recover project",
+      });
+    }
+  };
+  const handleDelete = async () => {
+    setloading(true);
+    if (!projectId) {
+      setloading(false);
+      toast("Error! ", { description: "Project not Found" });
+      return;
+    }
+    try {
+      const res = await deleteProject(projectId);
+      if (res.status !== 200) {
+        // throw new Error("Failed to recover project");
+        toast.error("Oppse!", {
+          description: res.error || "Failed to delete project",
+        });
+        return;
+      }
+      setopen(false);
+      route.refresh();
+      toast.success("Success", {
+        description: "Project delete successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Oppse!", {
+        description: " Failed to delete project",
+      });
+    }
+  };
   return (
     <motion.div
       variants={itemVarients}
@@ -48,12 +104,12 @@ const ProjectCard = ({
     >
       <div
         className=" relative aspect-[16/10] overflow-hidden rounded-lg cursor-pointer"
-        onClick={handleNavagation}
+        // onClick={handleNavagation}
       >
-        <ThumnailPreview
+        {/* <ThumnailPreview
           theme={theme}
           // slide={JSON.parse(JSON.stringify(slideData))?.[0]}
-        ></ThumnailPreview>
+        ></ThumnailPreview> */}
         <div className=" w-full">
           <div className=" space-y-1">
             <h3 className="font-semibold text-base text-primary line-clamp-1">
@@ -80,14 +136,32 @@ const ProjectCard = ({
                   <Button
                     size="sm"
                     variant="ghost"
-                    className=" bg-background-80 dark:hover:bg-background"
+                    className=" bg-background-80 text-white dark:hover:bg-background"
                     disabled={loading}
                   >
                     Recover
                   </Button>
                 </AlertDialogBox>
               ) : (
-                ""
+                <AlertDialogBox
+                  description="This will delete your project and send to Trash"
+                  className=" bg-red-500 text-white dark:bg-red-600 hover:bg-red-500 dark:hover:bg-red-700"
+                  loading={loading}
+                  open={open}
+                  onClick={handleDelete}
+                  handleOpen={() => {
+                    setopen(!open);
+                  }}
+                >
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className=" bg-background-80 text-white dark:hover:bg-background"
+                    disabled={loading}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogBox>
               )}
             </div>
           </div>

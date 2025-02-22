@@ -11,7 +11,7 @@ const NewProjectButton = ({ user }: { user: User }) => {
     <Button
       className=" bg-background-90 rounded-lg hover:bg-background-80 text-primary font-semibold cursor-not-allowed"
       disabled={!user?.subscription}
-      // onClick={()=> }
+      onClick={() => route.push("/create-page")}
     >
       <Plus></Plus>
       New Project
