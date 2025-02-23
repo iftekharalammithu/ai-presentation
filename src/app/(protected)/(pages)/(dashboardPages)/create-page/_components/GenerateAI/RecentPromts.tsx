@@ -5,9 +5,12 @@ import { containVarients, itemVarients } from "@/lib/constants";
 import { Card } from "@/components/ui/card";
 import { timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import useCreateAIStore from "@/store/useCreativeAIStore";
+import { toast } from "sonner";
 
 const RecentPromts = () => {
   const { promts, setPage } = usePromptStore();
+  const { addMultipleOutlines, setCurrentPrompt } = useCreateAIStore();
 
   const handleEdit = (id: string) => {
     const prompt = promts.find((prompt) => prompt?.id === id);
@@ -15,6 +18,8 @@ const RecentPromts = () => {
       setPage("create-scratch");
       addMultipleOutlines(prompt?.outlines);
       setCurrentPrompt(prompt?.title);
+    } else {
+      toast.error("Error", { description: "Prompt Not Found" });
     }
   };
 

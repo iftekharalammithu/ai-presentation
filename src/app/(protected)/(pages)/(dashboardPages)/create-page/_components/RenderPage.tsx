@@ -4,17 +4,36 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import usePromptStore from "@/store/usePromtStore";
 import CreatePageStart from "./CreatePage/CreatePage";
+import CreativeAI from "./GenerateAI/CreativeAI";
 
 const RenderPage = () => {
   const router = useRouter();
   const { page, setPage } = usePromptStore();
 
+  const handleBack = () => {
+    setPage("create");
+  };
+
+  const handleSelectOption = (option: string) => {
+    if (option === "template") {
+      router.push("/templates");
+    } else if (option === "create-scratch") {
+      setPage("create-scratch");
+    } else {
+      setPage("creative-ai");
+    }
+  };
+
   const renderStep = () => {
     switch (page) {
       case "create":
-        return <CreatePageStart></CreatePageStart>;
+        return (
+          <CreatePageStart
+            onSelectOption={handleSelectOption}
+          ></CreatePageStart>
+        );
       case "creative-ai":
-        return <> creative-ai</>;
+        return <CreativeAI onBack={handleBack}></CreativeAI>;
       case "create-scratch":
         return <> create-scratch</>;
       default:

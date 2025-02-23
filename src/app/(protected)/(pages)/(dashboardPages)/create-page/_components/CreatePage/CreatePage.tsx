@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { containVarients, CreatePageCard, itemVarients } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ type Props = {
 
 const CreatePageStart = ({ onSelectOption }: Props) => {
   const { promts, setPage } = usePromptStore();
+  useEffect(() => {
+    setPage("create");
+  }, []);
   return (
     <motion.div
       initial="hidden"
@@ -87,7 +90,7 @@ const CreatePageStart = ({ onSelectOption }: Props) => {
           </motion.div>
         ))}
       </motion.div>
-      <RecentPromts></RecentPromts>
+      {promts.length > 0 && <RecentPromts></RecentPromts>}
     </motion.div>
   );
 };

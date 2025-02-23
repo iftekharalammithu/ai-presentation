@@ -5,7 +5,8 @@ import { persist } from "zustand/middleware";
 type CreateAIStore = {
   outlines: OutlineCard[] | [];
   addMultipleOutlines: (outlines: OutlineCard[]) => void;
-  // setCurrentPrompt:
+  CurrentPrompt: string;
+  setCurrentPrompt: (prompt: string) => void;
   addOutline: (outline: OutlineCard) => void;
   // removeOutline: (id: string) => void
 };
@@ -13,7 +14,11 @@ type CreateAIStore = {
 const useCreateAIStore = create<CreateAIStore>()(
   persist(
     (set) => ({
+      //State and Actions
       outlines: [],
+      CurrentPrompt: "",
+      // function
+      setCurrentPrompt: (prompt: string) => set({ CurrentPrompt: prompt }),
       addMultipleOutlines: (outlines: OutlineCard[]) =>
         set((state) => ({ outlines: [...state.outlines, ...outlines] })),
       addOutline: (outline: OutlineCard) =>

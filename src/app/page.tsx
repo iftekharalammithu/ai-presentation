@@ -1,10 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Home() {
   const [show, setshow] = useState(false);
+  const router = useRouter();
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -17,7 +19,7 @@ export default function Home() {
           priority
         />
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <Button onClick={() => setshow(!show)}> Click me</Button>
+          <Button onClick={() => router.push("/dashboard")}> Dashboard</Button>
           {show ? <Button>show</Button> : ""}
           <li className="mb-2">
             Get started by editing{" "}
