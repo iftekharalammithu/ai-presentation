@@ -5,9 +5,11 @@ import { persist } from "zustand/middleware";
 type CreateAIStore = {
   outlines: OutlineCard[] | [];
   addMultipleOutlines: (outlines: OutlineCard[]) => void;
-  CurrentPrompt: string;
+  CurrentAIPrompt: string;
   setCurrentPrompt: (prompt: string) => void;
   addOutline: (outline: OutlineCard) => void;
+  resetOutlines: () => void;
+  // resetCurrentPrompt: ()
   // removeOutline: (id: string) => void
 };
 
@@ -16,13 +18,14 @@ const useCreateAIStore = create<CreateAIStore>()(
     (set) => ({
       //State and Actions
       outlines: [],
-      CurrentPrompt: "",
+      CurrentAIPrompt: "",
       // function
-      setCurrentPrompt: (prompt: string) => set({ CurrentPrompt: prompt }),
+      setCurrentPrompt: (prompt: string) => set({ CurrentAIPrompt: prompt }),
       addMultipleOutlines: (outlines: OutlineCard[]) =>
         set((state) => ({ outlines: [...state.outlines, ...outlines] })),
       addOutline: (outline: OutlineCard) =>
         set((state) => ({ outlines: [...state.outlines, outline] })),
+      resetOutlines: () => set({ outlines: [] }),
     }),
     {
       name: "creative-ai",
