@@ -21,6 +21,8 @@ import { toast } from "sonner";
 import { generateCreativePrompt } from "@/actions/openai";
 import { OutlineCard } from "srclib\types";
 import { v4 } from "uuid";
+import { createProject } from "@/actions/projects";
+import { useSlideStore } from "@/store/useSlideStore";
 
 type Props = {
   onBack: () => void;
@@ -43,6 +45,7 @@ const CreativeAI = ({ onBack }: Props) => {
   const [selectedCard, setselectedCard] = useState<string | null>(null);
   const [isGenerating, setisGenerating] = useState(false);
   const [editText, setEditText] = useState("");
+  const { setProject } = useSlideStore();
 
   const resetCards = () => {
     setEditingCards(null);
@@ -66,7 +69,8 @@ const CreativeAI = ({ onBack }: Props) => {
     }
     setisGenerating(true);
     const res = await generateCreativePrompt(CurrentAIPrompt);
-    if (res.status === 200 && res?.data?.Outlines) {
+    // console.log(res);
+    if (res.status === 200 && res?.data?.outlines) {
       const cardsData: OutlineCard[] = [];
       res.data?.outlines.map((outline: string, idx: number) => {
         const newCard = {
@@ -87,9 +91,50 @@ const CreativeAI = ({ onBack }: Props) => {
       });
     }
     setisGenerating(false);
+    setCurrentPrompt("");
   };
 
-  const handleGenerate = () => {};
+  const handleGenerate = async () => {
+    setisGenerating(true);
+    if (outlines.length === 0) {
+      toast.error("Error", {
+        description: "Please add at least one card to generate PPT",
+      });
+      return;
+    }
+    try {
+      const res = await createProject(
+        CurrentAIPrompt,
+        outlines.slice(0, noOfCards)
+      );
+      if (res.status !== 200 || !res.data) {
+        toast.error("Error", { description: "Failed to Generate PPT" });
+        return;
+      }
+
+      router.push(`/presentaion/${res.data.id}/select-theme`);
+      setProject(res.data);
+
+      addPrompt({
+        id: v4(),
+        title: CurrentAIPrompt || outlines?.[0]?.title,
+        outlines: outlines.slice(0, noOfCards),
+        createdAt: new Date().toISOString(),
+      });
+      toast.success("Success", {
+        description: "PPT Generated Successfully",
+      });
+      setCurrentPrompt("");
+      resetOutlines();
+    } catch (error) {
+      console.log(error);
+      toast.error("Error", {
+        description: "Failed to Generate PPT",
+      });
+    } finally {
+      setisGenerating(false);
+    }
+  };
 
   useEffect(() => {
     setnoOfCards(outlines.length);

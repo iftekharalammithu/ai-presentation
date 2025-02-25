@@ -1,16 +1,22 @@
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const generateCreativePrompt = async (userPrompt: string) => {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+  const MODEL_NAME = "gemini-1.5-pro";
+  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+
+  if (!API_KEY) {
+    return { status: 500, error: "GOOGLE_API_KEY is not set." };
+  }
+
+  const genAI = new GoogleGenerativeAI(API_KEY);
+  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
   const finalPrompt = `
     Create a coherent and relevant outline for the following prompt: ${userPrompt}.
     The outline should consist of at least 6 points, with each point written as a single sentence.
     Ensure the outline is well-structured and directly related to the topic. 
     Return the output in the following JSON format:
-  
+    
     {
       "outlines": [
         "Point 1",
@@ -21,41 +27,42 @@ export const generateCreativePrompt = async (userPrompt: string) => {
         "Point 6"
       ]
     }
-  
-    Ensure that the JSON is valid and properly formatted. Do not include any other text or explanations outside the JSON.
+    
+    Strictly return ONLY the JSON format above. Do not include any other text, explanations, or markdown formatting outside the JSON. do not use any Backtick marks.
     `;
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "chatgpt-4o-latest",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a helpful AI that generates outlines for presentations",
-        },
-        {
-          role: "user",
-          content: finalPrompt,
-        },
-      ],
-      max_tokens: 1000,
-      temperature: 0.0,
-    });
+  const generationConfig = {
+    temperature: 0.7,
+    maxOutputTokens: 1000,
+  };
 
-    const responseContent = completion.choices[0].message?.content;
-    if (responseContent) {
+  const parts = [{ text: finalPrompt }];
+  const contents = [{ role: "user", parts }]; // Added the role
+  // console.log("working");
+
+  try {
+    const result = await model.generateContent({
+      contents,
+      generationConfig,
+    });
+    const response = result.response;
+    const text =
+      response.candidates && response.candidates.length > 0
+        ? response.candidates[0].content.parts[0].text
+        : undefined;
+    if (text) {
       try {
-        const jsonResponse = JSON.parse(responseContent);
+        // console.log(text);
+        const jsonResponse = JSON.parse(text);
         return { status: 200, data: jsonResponse };
       } catch (error) {
-        console.log(" Error parsing JSON:", error);
-        return { status: 500, error: "Internal Server Error" };
+        console.error("Error parsing JSON:", error);
+        return { status: 500, error: "Internal Server Error - JSON Parsing" };
       }
     }
     return { status: 400, error: "No Content generated" };
   } catch (error) {
-    console.log(" Error in generateCreativePrompt:", error);
-    return { status: 500, error: "Internal Server Error" };
+    console.error("Error in generateCreativePrompt:", error);
+    return { status: 500, error: "Internal Server Error - Gemini API" };
   }
 };
