@@ -64,7 +64,7 @@ const Card = ({
           onClick={onCardClick}
           onDoubleClick={onCardDoubleClick}
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-between">
             {isEditing ? (
               <Input
                 ref={inputRef}

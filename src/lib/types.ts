@@ -72,5 +72,5 @@ export interface Theme {
 export interface OutlineCard {
   title: string;
   id: string;
-  order: string;
+  order: number;
 }

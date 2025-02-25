@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { containVarients, itemVarients } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
@@ -15,12 +15,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CardList from "../Common/CardList";
+import usePromptStore from "@/store/usePromtStore";
+import RecentPromts from "./RecentPromts";
+import { toast } from "sonner";
+import { generateCreativePrompt } from "@/actions/openai";
+import { OutlineCard } from "srclib\types";
+import { v4 } from "uuid";
 
 type Props = {
   onBack: () => void;
 };
 
 const CreativeAI = ({ onBack }: Props) => {
+  const { promts, addPrompt } = usePromptStore();
   const router = useRouter();
   const {
     CurrentAIPrompt,
@@ -50,7 +57,43 @@ const CreativeAI = ({ onBack }: Props) => {
     onBack();
   };
 
-  const generateOutline = () => {};
+  const generateOutline = async () => {
+    if (CurrentAIPrompt === "") {
+      toast.error("Error", {
+        description: "Please Enter Prompt",
+      });
+      return;
+    }
+    setisGenerating(true);
+    const res = await generateCreativePrompt(CurrentAIPrompt);
+    if (res.status === 200 && res?.data?.Outlines) {
+      const cardsData: OutlineCard[] = [];
+      res.data?.outlines.map((outline: string, idx: number) => {
+        const newCard = {
+          id: v4(),
+          title: outline,
+          order: idx + 1,
+        };
+        cardsData.push(newCard);
+      });
+      addMultipleOutlines(cardsData);
+      setnoOfCards(cardsData.length);
+      toast.success("Success", {
+        description: " Outline Generated Successfully",
+      });
+    } else {
+      toast.error("Error", {
+        description: "Failed to Generate Outline",
+      });
+    }
+    setisGenerating(false);
+  };
+
+  const handleGenerate = () => {};
+
+  useEffect(() => {
+    setnoOfCards(outlines.length);
+  }, [outlines.length]);
   return (
     <motion.div
       className=" space-y-6 w-full border max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
@@ -122,7 +165,7 @@ const CreativeAI = ({ onBack }: Props) => {
       <div className=" w-full flex justify-center items-center">
         <Button
           className=" font-medium text-lg flex gap-2 items-center"
-          // onClick={generateOutline}
+          onClick={generateOutline}
           disabled={isGenerating}
         >
           {isGenerating ? (
@@ -151,6 +194,22 @@ const CreativeAI = ({ onBack }: Props) => {
           setEditText(title);
         }}
       ></CardList>
+      {outlines.length > 0 && (
+        <Button
+          className=" w-full"
+          onClick={handleGenerate}
+          disabled={isGenerating}
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className=" animate-spin mr-2"></Loader2> Generating...
+            </>
+          ) : (
+            "Generate"
+          )}
+        </Button>
+      )}
+      {promts?.length > 0 && <RecentPromts></RecentPromts>}
     </motion.div>
   );
 };

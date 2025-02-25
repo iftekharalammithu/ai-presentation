@@ -3,6 +3,8 @@ import { OutlineCard } from "@/lib/types";
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Card from "./Card";
+import AddCardButton from "./AddCardButton";
+// import { toast } from "sonner";
 
 type Props = {
   outlines: OutlineCard[];
@@ -71,7 +73,7 @@ const CardList = ({
       removedCard
     );
     addMultipleOutlines(
-      updateCards.map((card, i) => ({ ...card, order: (i + 1).toString() }))
+      updateCards.map((card, i) => ({ ...card, order: i + 1 }))
     );
     setdraggedItem(null);
     setDragOverIndex(null);
@@ -89,10 +91,11 @@ const CardList = ({
   };
 
   const onCardDelete = (id: string) => {
+    console.log(outlines);
     addMultipleOutlines(
       outlines
-        .filter((card) => card.id !== id)
-        .map((card, index) => ({ ...card, order: (index + 1).toString() }))
+        .filter((card) => console.log(card))
+        .map((card, index) => ({ ...card, order: index + 1 }))
     );
   };
 
@@ -141,6 +144,27 @@ const CardList = ({
     return {};
   };
 
+  const onAddCard = (index?: number) => {
+    const newCard: OutlineCard = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: editText || "New Section",
+      order: (index !== undefined ? index + 1 : outlines.length) + 1,
+    };
+    const updatedCard =
+      index !== undefined
+        ? [
+            ...outlines.slice(0, index + 1),
+            newCard,
+            ...outlines.slice(index + 1).map((card) => ({
+              ...card,
+              order: card.order + 1,
+            })),
+          ]
+        : [...outlines, newCard];
+
+    addMultipleOutlines(updatedCard);
+    setEditText("");
+  };
   return (
     <motion.div
       className=" space-y-2"
@@ -160,10 +184,12 @@ const CardList = ({
       }}
     >
       <AnimatePresence>
-        {outlines.map((card, idex) => (
+        {outlines.map((card, index) => (
           <React.Fragment key={card.id}>
             <Card
-              onDragOver={(e) => onDragOver(e, idex)}
+              onDragOver={(e) =>
+                onDragOver(e as React.DragEvent<HTMLDivElement>, index)
+              }
               card={card}
               isEditing={editingCard === card.id}
               isSelected={selectedCard === card.id}
@@ -184,6 +210,7 @@ const CardList = ({
               }}
               dragOverStyles={getDragOverStyles(index)}
             ></Card>
+            <AddCardButton onAddCard={() => onAddCard(index)}></AddCardButton>
           </React.Fragment>
         ))}
       </AnimatePresence>
