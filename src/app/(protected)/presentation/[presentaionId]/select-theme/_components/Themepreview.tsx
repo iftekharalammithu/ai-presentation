@@ -5,6 +5,10 @@ import React, { useEffect, useState } from "react";
 import { useAnimation } from "framer-motion";
 import { Theme } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import ThemeCard from "./ThemeCard";
+import ThemePicker from "./ThemePicker";
+import { themes } from "@/lib/constants";
 
 const Themepreview = () => {
   const router = useRouter();
@@ -100,8 +104,106 @@ const Themepreview = () => {
     </div>
   );
 
-  // const rightCardContent=()
-  return <div></div>;
+  const rightCardContent = (
+    <div className=" space-y-4">
+      <div
+        className=" rounded-xl p-6"
+        style={{ backgroundColor: selectTheme.accentColor + "10" }}
+      >
+        <h3
+          className=" text-xl font-semibold mb-4"
+          style={{ color: selectTheme.accentColor }}
+        >
+          Theme Features
+        </h3>
+        <ul
+          className=" list-disc list-inside space-y-2"
+          style={{ color: selectTheme.accentColor }}
+        >
+          <li>Responsive Design</li>
+          <li>Dark and light mode</li>
+          <li>Custom color schemes</li>
+          <li>Accessibility Optimized</li>
+        </ul>
+      </div>
+      <Button
+        variant="outline"
+        className=" h-12 px-6 text-lg font-medium"
+        style={{
+          borderColor: selectTheme.accentColor,
+          color: selectTheme.fontColor,
+        }}
+      >
+        Explore Features
+      </Button>
+    </div>
+  );
+  const applyTheme = (theme: Theme) => {
+    setSelectTheme(theme);
+    setCurrentTheme(theme);
+  };
+
+  return (
+    <div
+      className=" h-screen w-full flex"
+      style={{
+        backgroundColor: selectTheme.backgroundColor,
+        color: selectTheme.accentColor,
+        fontFamily: selectTheme.fontFamily,
+      }}
+    >
+      <div className=" flex-grow overflow-y-auto">
+        <div className=" p-12 flex flex-col items-center min-h-screen">
+          <Button
+            variant="outline"
+            className=" mb-12 self-start"
+            style={{
+              backgroundColor: selectTheme.accentColor + "10",
+              color: selectTheme.accentColor,
+              borderColor: selectTheme.accentColor + "20",
+            }}
+            onClick={() => {
+              router.push("/create-page");
+            }}
+          >
+            <ArrowLeft className=" mr-2 h-5 w-5"></ArrowLeft>
+            Back
+          </Button>
+          <div className=" w-full flex justify-center items-center relative  flex-grow">
+            <ThemeCard
+              title="Quick Start"
+              description="Get up and Running in no time"
+              content={leftCardContent}
+              variant="left"
+              theme={selectTheme}
+              controls={controls}
+            ></ThemeCard>
+            <ThemeCard
+              title="Main Preview"
+              description="Get up and Running in no time"
+              content={mainCardContent}
+              variant="left"
+              theme={selectTheme}
+              controls={controls}
+            ></ThemeCard>
+            <ThemeCard
+              title="Theme Features"
+              description="Get up and Running in no time"
+              content={rightCardContent}
+              variant="left"
+              theme={selectTheme}
+              controls={controls}
+            ></ThemeCard>
+          </div>
+        </div>
+      </div>
+      <ThemePicker
+        selectedTheme={selectTheme}
+        themes={themes}
+        onThemeSelect={applyTheme}
+      ></ThemePicker>
+    </div>
+  );
 };
 
 export default Themepreview;
