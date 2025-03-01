@@ -16,6 +16,7 @@ type Props = {
   projectId: string;
   title: string;
   createAt: string;
+  src: string;
   isDelete?: boolean;
   slideData?: JsonValue;
   themeName: string;
@@ -26,6 +27,7 @@ const ProjectCard = ({
   title,
   createAt,
   isDelete,
+  src,
   slideData,
   themeName,
 }: Props) => {
@@ -34,8 +36,8 @@ const ProjectCard = ({
   const route = useRouter();
   const { setSlides } = useSlideStore();
   const handleNavagation = () => {
-    // setSlides(JSON.parse(JSON.stringify(slideData)));
-    console.log("click");
+    setSlides(JSON.parse(JSON.stringify(slideData)));
+    // console.log("click");
     route.push(`/presentation/${projectId}`);
   };
   const theme = themes.find((theme) => theme.name === themeName) || themes[0];
@@ -104,12 +106,12 @@ const ProjectCard = ({
     >
       <div
         className=" relative aspect-[16/10] overflow-hidden rounded-lg cursor-pointer"
-        // onClick={handleNavagation}
+        onClick={handleNavagation}
       >
-        {/* <ThumnailPreview
+        <ThumnailPreview
           theme={theme}
-          // slide={JSON.parse(JSON.stringify(slideData))?.[0]}
-        ></ThumnailPreview> */}
+          slide={JSON.parse(JSON.stringify(slideData))?.[0]}
+        ></ThumnailPreview>
         <div className=" w-full">
           <div className=" space-y-1">
             <h3 className="font-semibold text-base text-primary line-clamp-1">

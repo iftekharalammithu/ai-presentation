@@ -1,9 +1,8 @@
 import { getAllProject } from "@/actions/projects";
 import React from "react";
-import { clerkMiddleware } from "@clerk/nextjs/server";
+
 import NotFound from "@/components/global/not-found";
 import Projects from "@/components/global/projects";
-import ProjectCard from "@/components/global/project-card";
 
 const DashboardPage = async () => {
   const allProject = await getAllProject();

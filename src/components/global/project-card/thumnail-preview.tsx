@@ -9,7 +9,7 @@ interface ThumnailPreviewProps {
 }
 
 const ThumnailPreview = ({ slide, theme }: ThumnailPreviewProps) => {
-  console.log(slide);
+  // console.log(slide);
   return (
     <div
       style={{
@@ -28,7 +28,7 @@ const ThumnailPreview = ({ slide, theme }: ThumnailPreviewProps) => {
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-600">
-          <Image className=" w-6 h-6 text-gray-500" />
+          <Image className="w-6 h-6 text-gray-500" />
         </div>
       )}
     </div>

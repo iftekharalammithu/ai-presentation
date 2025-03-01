@@ -8,6 +8,8 @@ import { redirect, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 type Props = {};
 
 const Page = (props: Props) => {
@@ -55,7 +57,12 @@ const Page = (props: Props) => {
       </div>
     );
   }
-  return <DndProvider></DndProvider>;
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      {/* Your other components go here */}
+    </DndProvider>
+  );
 };
 
 export default Page;

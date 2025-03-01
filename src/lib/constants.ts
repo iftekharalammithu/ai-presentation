@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import { BookTemplate, Home, Settings, Trash } from "lucide-react";
 import { Theme } from "./types";
 
@@ -44,10 +44,8 @@ export const itemVarients = {
     y: 0,
     opacity: 1,
     transition: {
-      
       type: "spring",
       stiffness: 100,
-      
     },
   },
 };

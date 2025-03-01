@@ -1,10 +1,14 @@
+"use client";
+import { generateLayouts } from "@/actions/openai";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Theme } from "@/lib/types";
 import { useSlideStore } from "@/store/useSlideStore";
 import { Loader2, Wand2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 type Props = {
   selectedTheme: Theme;
@@ -25,6 +29,37 @@ const ThemePicker = ({ selectedTheme, themes, onThemeSelect }: Props) => {
       toast.error("Error", {
         description: "Please select a theme",
       });
+      return;
+    }
+    if (project?.id === "") {
+      toast.error("Error", {
+        description: "Please create a project first",
+      });
+      router.push("/create-page");
+    }
+    try {
+      const res = await generateLayouts(
+        params.presentationId as string,
+        currentTheme.name
+      );
+      if (res.status !== 200 && !res?.data) {
+        toast.error("Error", {
+          description: "Failed to generate layouts",
+        });
+      }
+      toast.success("Success", {
+        description: "Layouts Generateed Successfully",
+      });
+
+      router.push(`presentation/${project?.id}`);
+      setSlides(res?.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error", {
+        description: "Failed to generate layouts",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +107,51 @@ const ThemePicker = ({ selectedTheme, themes, onThemeSelect }: Props) => {
           )}
         </Button>
       </div>
+      <ScrollArea className=" flex-grow px-8 pb-8">
+        <div className=" grid grid-cols-2 gap-4">
+          {themes.map((theme) => (
+            <motion.div
+              key={theme.name}
+              whileHover={{
+                scale: 1.02,
+              }}
+              whileTap={{
+                scale: 0.98,
+              }}
+            >
+              <Button
+                onClick={() => onThemeSelect(theme)}
+                className=" flex flex-col items-center justify-start p-6 w-full h-auto"
+                style={{
+                  fontFamily: theme.fontFamily,
+                  color: theme.fontColor,
+                  background: theme.backgroundColor || theme.gradientBackground,
+                }}
+              >
+                <div className=" w-full flex items-center justify-between">
+                  <span className=" text-xl font-bold">{theme.name}</span>
+                  <div
+                    className=" w-3 h-3 rounded-full"
+                    style={{ backgroundColor: theme.accentColor }}
+                  ></div>
+                </div>
+                <div className=" space-y-1 w-full">
+                  <div
+                    className=" text-2xl font-bold"
+                    style={{ color: theme.accentColor }}
+                  >
+                    Title
+                  </div>
+                  <div className=" text-base opacity-80">
+                    Body &{" "}
+                    <span style={{ color: theme.accentColor }}>Link</span>
+                  </div>
+                </div>
+              </Button>
+            </motion.div>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 };

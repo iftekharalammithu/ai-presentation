@@ -1,8 +1,9 @@
-import { Project } from "@prisma/client";
-import React from "react";
-import { motion } from "framer-motion";
+"use client";
 import { containVarients } from "@/lib/constants";
 import ProjectCard from "../project-card";
+import { motion } from "framer-motion";
+import { Project } from "@prisma/client";
+
 type Props = {
   projects: Project[];
 };
@@ -22,7 +23,7 @@ const Projects = ({ projects }: Props) => {
           createAt={project?.createdAt.toString()}
           isDelete={project?.isDeleted}
           slideData={project?.slides}
-          themeName={project?.themeName}
+          src={project.thumbnail}
         ></ProjectCard>
       ))}
     </motion.div>
