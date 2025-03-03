@@ -22,6 +22,13 @@ interface SlideState {
     contentId: string,
     newContent: string | string[] | string[][]
   ) => void;
+
+  addComponentInSlide: (
+    slideId: string,
+    item: ContentItem,
+    parentId: string,
+    index: number
+  ) => void;
 }
 
 const defaultTheme: Theme = {
@@ -110,6 +117,38 @@ export const useSlideStore = create(
                 : slide
             ),
           };
+        });
+      },
+      addComponentInSlide: (
+        slideId: string,
+        item: ContentItem,
+        parentId: string,
+        index: number
+      ) => {
+        set((state) => {
+          const updateedSlides = state.slides.map((slide) => {
+            if (slide.id === slideId) {
+              const UpdateContentRecursively = (
+                content: ContentItem
+              ): ContentItem => {
+                if (content.id === parentId && Array.isArray(content.content)) {
+                  const updateedContent = [...content.content];
+                  updateedContent.splice(index, 0, item);
+                  return {
+                    ...content,
+                    content: updateedContent as unknown as string[],
+                  };
+                }
+                return content;
+              };
+              return {
+                ...slide,
+                content: UpdateContentRecursively(slide.content),
+              };
+            }
+            return slide;
+          });
+          return { slides: updateedSlides };
         });
       },
     }),
