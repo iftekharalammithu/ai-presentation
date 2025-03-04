@@ -1,8 +1,19 @@
 import { ContentItem } from "@/lib/types";
 import React, { useCallback } from "react";
 import { animate, motion } from "framer-motion";
-import { Heading1 } from "@/components/global/editor/components/Headings";
+import {
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Title,
+} from "@/components/global/editor/components/Headings";
 import { cn } from "@/lib/utils";
+import DropZone from "./DropZone";
+import Paragraph from "@/components/global/editor/components/Paragraph";
+import TableComponents from "@/components/global/editor/components/TableComponents";
+import ColumnComponent from "@/components/global/editor/components/ColumnComponent";
+import ImageComponent from "@/components/global/editor/components/ImageComponent";
 
 type MasterRecursiveComponentProps = {
   content: ContentItem;
@@ -40,10 +51,89 @@ const ContentRenderer: React.FC<MasterRecursiveComponentProps> = React.memo(
     switch (content.type) {
       case "heading1":
         return (
-          <motion.div className="w-full h-full">
+          <motion.div {...animationProps} className="w-full h-full">
             <Heading1 {...commonProps}></Heading1>
           </motion.div>
         );
+      case "heading2":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Heading2 {...commonProps}></Heading2>
+          </motion.div>
+        );
+      case "heading3":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Heading3 {...commonProps}></Heading3>
+          </motion.div>
+        );
+      case "heading4":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Heading4 {...commonProps}></Heading4>
+          </motion.div>
+        );
+      case "title":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Title {...commonProps}></Title>
+          </motion.div>
+        );
+      case "paragraph":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Paragraph {...commonProps}></Paragraph>
+          </motion.div>
+        );
+      case "table":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <TableComponents
+              content={content.content as string[][]}
+              onChange={(newContent) =>
+                onContentChage(
+                  content.id,
+                  newContent !== null ? newContent : ""
+                )
+              }
+              initialColSize={content.initialColumns}
+              initialRowSize={content.intialRows}
+              isPreview={isPreview}
+              isEditable={isEditable}
+            ></TableComponents>
+          </motion.div>
+        );
+      case "resizable-column":
+        if (Array.isArray(content.content)) {
+          return (
+            <motion.div {...animationProps} className="w-full h-full">
+              <ColumnComponent
+                content={content.content as ContentItem[]}
+                className={content.className}
+                onContentChange={onContentChage}
+                isPreview={isPreview}
+                isEditable={isEditable}
+                slideId={SlideId}
+              ></ColumnComponent>
+            </motion.div>
+          );
+        }
+        return null;
+      case "image":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <ImageComponent
+              src={content.content as string}
+              alt={content.alt || "image"}
+              className={content.className}
+              isPreview={isPreview}
+              isEditable={isEditable}
+              onContentChange={onContentChage}
+              contentId={content.id}
+            ></ImageComponent>
+          </motion.div>
+        );
+
       case "column":
         if (Array.isArray(content.content)) {
           return (
@@ -51,26 +141,52 @@ const ContentRenderer: React.FC<MasterRecursiveComponentProps> = React.memo(
               {...animationProps}
               className={cn(" w-full h-full flex flex-col", content.className)}
             >
-              {content.content.length > 0
-                ? (content.content as ContentItem[]).map(
-                    (subItem: ContentItem, subIndex: number) => (
-                      <React.Fragment key={subItem.id || `iten-${subIndex}`}>
-                        {!isPreview &&
-                          !subItem.restrictToDrop &&
-                          subIndex === 0 &&
-                          isEditable && <DropZone></DropZone>}
-                      </React.Fragment>
-                    )
+              {content.content.length > 0 ? (
+                (content.content as ContentItem[]).map(
+                  (subItem: ContentItem, subIndex: number) => (
+                    <React.Fragment key={subItem.id || `iten-${subIndex}`}>
+                      {!isPreview &&
+                        !subItem.restrictToDrop &&
+                        subIndex === 0 &&
+                        isEditable && (
+                          <DropZone
+                            index={0}
+                            parentId={content.id}
+                            slideId={SlideId}
+                          ></DropZone>
+                        )}
+                      <MasterRecursiveComponent
+                        content={subItem}
+                        onContentChage={onContentChage}
+                        isPreview={isPreview}
+                        SlideId={SlideId}
+                        isEditable={isEditable}
+                        index={subIndex}
+                      ></MasterRecursiveComponent>
+                      {!isPreview && !subItem.restrictToDrop && (
+                        <DropZone
+                          index={subIndex + 1}
+                          parentId={content.id}
+                          slideId={SlideId}
+                        ></DropZone>
+                      )}
+                    </React.Fragment>
                   )
-                : ""}
+                )
+              ) : isEditable ? (
+                <DropZone
+                  index={0}
+                  parentId={content.id}
+                  slideId={SlideId}
+                ></DropZone>
+              ) : null}
             </motion.div>
           );
         }
         return null;
 
       default:
-        return <h1>Noting</h1>;
-        break;
+        return null;
     }
   }
 );
