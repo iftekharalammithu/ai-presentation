@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import UploadImage from "./UploadImage";
 
 type Props = {
   src: string;
@@ -33,7 +34,12 @@ const ImageComponent = ({
         className={`object-cover w-full h-full rounded-lg ${className}`}
       ></Image>
       {!isPreview && isEditable && (
-        <div className="absolute top-0 left-0  group-hover:block"></div>
+        <div className="absolute top-0 left-0  group-hover:block">
+          <UploadImage
+            contentId={contentId}
+            onContentChange={onContentChange}
+          />
+        </div>
       )}
     </div>
   );

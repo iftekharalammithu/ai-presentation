@@ -1,3 +1,4 @@
+"use client";
 import { ContentItem } from "@/lib/types";
 import React, { useCallback } from "react";
 import { animate, motion } from "framer-motion";
@@ -14,6 +15,15 @@ import Paragraph from "@/components/global/editor/components/Paragraph";
 import TableComponents from "@/components/global/editor/components/TableComponents";
 import ColumnComponent from "@/components/global/editor/components/ColumnComponent";
 import ImageComponent from "@/components/global/editor/components/ImageComponent";
+import BlockQuote from "@/components/global/editor/components/BlockQuote";
+import ListComponents, {
+  BulletList,
+  TodoList,
+} from "@/components/global/editor/components/ListComponents";
+import CalloutBox from "@/components/global/editor/components/CalloutBox";
+import CodeBlock from "@/components/global/editor/components/CodeBlock";
+import TableOfContents from "@/components/global/editor/components/TableOfContents";
+import Divider from "@/components/global/editor/components/Divider";
 
 type MasterRecursiveComponentProps = {
   content: ContentItem;
@@ -131,6 +141,91 @@ const ContentRenderer: React.FC<MasterRecursiveComponentProps> = React.memo(
               onContentChange={onContentChage}
               contentId={content.id}
             ></ImageComponent>
+          </motion.div>
+        );
+      case "blockquote":
+        return (
+          <motion.div
+            {...animationProps}
+            className={cn(" w-full h-full flex flex-col", content.className)}
+          >
+            <BlockQuote>
+              <Paragraph {...commonProps}></Paragraph>
+            </BlockQuote>
+          </motion.div>
+        );
+      case "numberdList":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <ListComponents
+              items={content.content as string[]}
+              onchange={(newItems) => onContentChage(content.id, newItems)}
+              className={content.className}
+            ></ListComponents>
+          </motion.div>
+        );
+      case "bulletList":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <BulletList
+              items={content.content as string[]}
+              onchange={(newItems) => onContentChage(content.id, newItems)}
+              className={content.className}
+            ></BulletList>
+          </motion.div>
+        );
+
+      case "todoList":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <TodoList
+              items={content.content as string[]}
+              onchange={(newItems) => onContentChage(content.id, newItems)}
+              className={content.className}
+            ></TodoList>
+          </motion.div>
+        );
+
+      case "calloutBox":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <CalloutBox
+              type={content.callOutType || "info"}
+              className={content.className}
+            >
+              <Paragraph {...commonProps}></Paragraph>
+            </CalloutBox>
+          </motion.div>
+        );
+      case "codeBlock":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <CodeBlock
+              code={content.code}
+              language={content.language}
+              onchange={() => {}}
+              className={content.className}
+            ></CodeBlock>
+          </motion.div>
+        );
+
+      case "tableofContents":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <TableOfContents
+              items={content.content as string[]}
+              onItemClick={(id) => {
+                console.log(`Navigate to section: ${id}`);
+              }}
+              className={content.className}
+            ></TableOfContents>
+          </motion.div>
+        );
+
+      case "divider":
+        return (
+          <motion.div {...animationProps} className="w-full h-full">
+            <Divider className={content.className}></Divider>
           </motion.div>
         );
 
