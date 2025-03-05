@@ -4,6 +4,7 @@ import { client } from "@/lib/prisma";
 import { onAuthenticateUser } from "./user";
 import { data } from "@/lib/constants";
 import { OutlineCard } from "@/lib/types";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 export const getAllProject = async () => {
   try {
@@ -153,6 +154,28 @@ export const getprojectById = async (projectId: string) => {
     return { status: 200, data: project };
   } catch (error) {
     console.error("🛑 ️ Error in getprojectById:", error);
+    return { status: 500, error: "Internal Server Error" };
+  }
+};
+
+export const updateSlides = async (projectId: string, slides: JsonValue) => {
+  try {
+    if (!projectId || !slides) {
+      return { status: 400, error: "Invalid Request" };
+    }
+    const updatedProject = await client.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        slides,
+      },
+    });
+    if (!updatedProject) {
+      return { status: 500, error: "Failed to Update Project" };
+    }
+    return { status: 200, data: updatedProject };
+  } catch (error) {
     return { status: 500, error: "Internal Server Error" };
   }
 };
