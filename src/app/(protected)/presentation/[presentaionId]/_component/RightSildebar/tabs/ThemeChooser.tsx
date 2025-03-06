@@ -1,3 +1,4 @@
+import { updateTheme } from "@/actions/projects";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { themes } from "@/lib/constants";
@@ -20,8 +21,15 @@ const ThemeChooser = () => {
     setTheme(theme.type);
     setCurrentTheme(theme);
     try {
-      const res = await updateTheme();
-    } catch (error) {}
+      const res = await updateTheme(project.id, theme.name);
+      if (res.status !== 200) {
+        throw new Error("Failed to update Theme");
+      }
+      toast.success("Success", { description: "Theme Updated" });
+    } catch (error) {
+      toast.error("Error", { description: "Failed to Update Theme" });
+      console.log(error);
+    }
   };
   return (
     <ScrollArea className=" h-[400px]">

@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Home, Play, Share } from "lucide-react";
 import { toast } from "sonner";
+import PresentationMode from "./PresentationMode";
 
 type Props = {
   presentation: string;
@@ -70,9 +71,11 @@ const Navbar = ({ presentation }: Props) => {
           <span className=" hidden sm:inline">Present</span>
         </Button>
       </div>
-      {
-        // isPresentation && <PresentationMode></PresentationMode>
-      }
+      {isPresentation && (
+        <PresentationMode
+          onClose={() => setIsPresentation(false)}
+        ></PresentationMode>
+      )}
     </nav>
   );
 };

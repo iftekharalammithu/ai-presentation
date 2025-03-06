@@ -4,6 +4,9 @@ import { User } from "@prisma/client";
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { buySubcription } from "@/actions/LemonSqueezy";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   prismaUser: User;
@@ -12,13 +15,28 @@ type Props = {
 const NavFooter = ({ prismaUser }: Props) => {
   const { isLoaded, isSignedIn, user } = useUser();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   if (!isLoaded || !isSignedIn) {
     return null;
   }
 
   const handleUpgrading = async () => {
-    console.log("click");
+    setLoading(true);
+    try {
+      const res = await buySubcription(prismaUser.id);
+      if (res.status !== 200) {
+        throw new Error("Failed to Upgrade Subscription");
+      }
+      router.push(res.url);
+    } catch (error) {
+      console.log(error);
+      toast.error("error", {
+        description: "Failed to Upgrade Subscription",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,7 +45,7 @@ const NavFooter = ({ prismaUser }: Props) => {
         <div className="flex flex-col  gap-y-6 items-start group-data-[collapsable=icon]:hidden ">
           {/* Subscription Section */}
           {!prismaUser.subscription && (
-            <div className="flex flex-col items-start p-2 pb-3 gap-4 bg-background-80 rounded-lg  ">
+            <div className="flex flex-col items-start p-2 pb-3 gap-4 bg-background-80 rounded-xl  ">
               <div className="flex  flex-col items-start gap-1">
                 <p className="text-base font-bold ">
                   Get <span className="text-vivid">Creative AI</span>

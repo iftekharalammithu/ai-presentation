@@ -1,3 +1,4 @@
+import { MasterRecursiveComponent } from "@/app/(protected)/presentation/[presentaionId]/_component/Editor/MasterRecursiveComponent";
 import { Slide, Theme } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
@@ -24,7 +25,12 @@ const ThumnailPreview = ({ slide, theme }: ThumnailPreviewProps) => {
     >
       {slide ? (
         <div className=" scale-[0.5] origin-top-left w-[200%] h-[200%] overflow-hidden">
-          This is a slide
+          <MasterRecursiveComponent
+            SlideId={slide.id}
+            content={slide.content}
+            onContentChage={() => {}}
+            isPreview={true}
+          ></MasterRecursiveComponent>
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-600">

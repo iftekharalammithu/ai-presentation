@@ -32,9 +32,9 @@ type MasterRecursiveComponentProps = {
     newContent: string | string[] | string[][]
   ) => void;
   isPreview: boolean;
-  isEditable: boolean;
+  isEditable?: boolean;
   SlideId: string;
-  index: number;
+  index?: number;
 };
 
 const ContentRenderer: React.FC<MasterRecursiveComponentProps> = React.memo(
