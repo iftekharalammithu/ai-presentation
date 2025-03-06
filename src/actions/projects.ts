@@ -179,3 +179,27 @@ export const updateSlides = async (projectId: string, slides: JsonValue) => {
     return { status: 500, error: "Internal Server Error" };
   }
 };
+
+export const updateTheme = async (projectId: string, theme: string) => {
+  try {
+    if (!projectId || !theme) {
+      return { status: 400, error: "Invalid Request" };
+    }
+
+    const updateProject = await client.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        themeName: theme,
+      },
+    });
+    if (!updateProject) {
+      return { status: 500, error: "Failed to Update Theme" };
+    }
+    return { status: 200, data: updateProject };
+  } catch (error) {
+    console.error("🛑 ️ Error in updateTheme:", error);
+    return { status: 500, error: "Internal Server Error" };
+  }
+};
