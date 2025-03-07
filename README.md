@@ -4,8 +4,6 @@ A modern, AI-powered presentation creation tool that helps you build beautiful, 
 
 ![AI Presentation Builder Demo](https://img.youtube.com/vi/kKa-AtjsmXQ/0.jpg)
 
-[Watch the Demo Video](https://www.youtube.com/watch?v=kKa-AtjsmXQ)
-
 ---
 
 ## Overview

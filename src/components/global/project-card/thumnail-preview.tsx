@@ -5,7 +5,7 @@ import { Image } from "lucide-react";
 import React from "react";
 
 interface ThumnailPreviewProps {
-  slide: Slide;
+  slide?: Slide;
   theme: Theme;
 }
 
@@ -34,7 +34,7 @@ const ThumnailPreview = ({ slide, theme }: ThumnailPreviewProps) => {
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-600">
-          <Image className="w-6 h-6 text-gray-500" />
+          <Image className="w-6 h-6 text-gray-500" alt="Placeholder icon" />
         </div>
       )}
     </div>

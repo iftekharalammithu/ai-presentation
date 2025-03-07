@@ -32,7 +32,20 @@ import {
 import { BookTemplate, Home, Settings, Trash } from "lucide-react";
 
 import { ComponentGroup, LayoutGroup, Theme } from "./types";
-import { Title } from "./SlideComponent";
+import {
+  Heading2,
+  Title,
+  Heading1,
+  Heading3,
+  Heading4,
+  Paragraph,
+  Table,
+  BulletListComponent,
+  NumberedListComponent,
+  TodoListComponent,
+  CalloutBoxComponent,
+  ResizableColumn,
+} from "./SlideComponent";
 
 export const data = {
   user: {
