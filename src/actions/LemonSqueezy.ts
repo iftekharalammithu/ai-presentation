@@ -1,5 +1,6 @@
+"use server";
+
 import { lemonSqueezyClient } from "@/lib/axios";
-import url from "node_modulesaxioslibplatform\nodeclassesURLSearchParams";
 
 export const buySubcription = async (buyUserId: string) => {
   try {
@@ -37,6 +38,7 @@ export const buySubcription = async (buyUserId: string) => {
     const checkoutUrl = res.data.data.attributes.url;
     return { url: checkoutUrl, status: 200 };
   } catch (error) {
+    console.error(error);
     return { message: " Internal Server Error", status: 500 };
   }
 };
